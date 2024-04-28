@@ -1,0 +1,24 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hostname-hpa
+  namespace: default
+spec:
+  maxReplicas: 3
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hostname-server
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: loadbalancing.googleapis.com|https|internal|request_count
+        selector:
+          matchLabels:
+            resource.labels.backend_name: k8s1-2908a40f-default-hostname-80-a795fcc0
+      target:
+        type: AverageValue
+        averageValue: 1000m
+
