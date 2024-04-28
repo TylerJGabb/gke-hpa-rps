@@ -11,6 +11,6 @@ terraform {
 }
 
 provider "google" {
-  project = "gke-sandbox-421603"
-  region  = "us-central1"
+  project = var.project
+  region  = var.reqion
 }
