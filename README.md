@@ -20,3 +20,16 @@ Install the custom-metrics-stackdriver-#dapter onto the cluster, this involves s
 1. ssh into the vm and start some curl request loops to stress the load balancer
 2. slowly add more and more requests to the load balancer to see the HPA scale up the pods
 ![alt text](rps-vs-hpa.png)
+
+## A note about how scaling works
+The HPA is utilizing the `AverageValue` so the ratio used to scale is the found via the calculation `((currentValue / currentReplicas) / targetValue)` and then that is compared againsed the `targetValue` to determine if the HPA should scale up or down.
+
+### For Example
+- Let `RPS = 2` 
+- Let `currentTeplicas=1`
+- Let `targetValue=1`
+
+Then the ratio is is `(2/1)/1 = 2`, triggering a scale up, by 1 pods, from `1 -> 2`
+
+Once the pods are scaled up, then the ratio is `(2/2)/1 = 1`, which is equal to our target value, so the HPA will not scale anymore.
+
